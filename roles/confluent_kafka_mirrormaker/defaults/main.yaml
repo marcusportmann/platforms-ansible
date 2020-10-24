@@ -1,0 +1,23 @@
+---
+# file: roles/confluent_kafka_mirrormaker/defaults/main.yaml
+
+confluent_defaults:
+  kafka_mirrormaker:
+    etc_directory: /etc/kafka
+    log_directory: /var/log/kafka
+
+    user: cp-kafka
+    user_id: 311
+
+    group: cp-kafka
+    group_id: 311
+
+    kafka_broker:
+      secure_broker_port: 9093
+      username: mirrormaker
+
+    prometheus_jmx_exporter:
+      enabled: true
+      port: 9130
+
+confluent_config: "{{ confluent_defaults | combine(confluent | default({}), recursive=True) }}"

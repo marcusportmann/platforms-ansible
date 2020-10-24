@@ -1,0 +1,54 @@
+---
+# file: roles/confluent_zookeeper/defaults/main.yaml
+
+confluent_defaults:
+  zookeeper:
+    etc_directory: /etc/zookeeper
+    log_directory: /var/log/zookeeper
+    data_directory: /data/zookeeper/data
+    data_log_directory: /data/zookeeper/data-log
+
+    user: cp-zookeeper
+    user_id: 316
+
+    group: cp-zookeeper
+    group_id: 316
+
+    client_port: 2181
+    secure_client_port: 2182
+    cluster_ports: "2888:3888"
+
+    admin_server:
+      enabled: 'false'
+      port: 8080
+
+    max_client_connections: 60
+
+    ## Rolling file appender setttings
+    rolling_log_file_max_size: 10MB
+    max_rolling_log_file_count: 10
+
+    tick_time: 2000
+    init_limit: 5
+    sync_limit: 2
+
+    autopurge_purge_interval: 1
+    autopurge_snap_retain_count: 10
+
+    enable_remote_jmx: true
+
+    users:
+      kafka:
+        username: kafka
+      admin:
+        username: admin
+
+    prometheus_exporter:
+      enabled: false
+      port: 9151
+
+    prometheus_jmx_exporter:
+      enabled: true
+      port: 9150
+
+confluent_config: "{{ confluent_defaults | combine(confluent | default({}), recursive=True) }}"

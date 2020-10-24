@@ -1,0 +1,23 @@
+---
+# file: roles/confluent_schema_registry/defaults/main.yaml
+
+confluent_defaults:
+  schema_registry:
+    etc_directory: /etc/schema-registry
+    log_directory: /var/log/schema-registry
+
+    user: cp-schema-registry
+    user_id: 315
+
+    group: cp-schema-registry
+    group_id: 315
+
+    kafka_server:
+      secure_broker_port: 9093
+      username: schema-registry
+
+    prometheus_jmx_exporter:
+      enabled: true
+      port: 9110
+
+confluent_config: "{{ confluent_defaults | combine(confluent | default({}), recursive=True) }}"

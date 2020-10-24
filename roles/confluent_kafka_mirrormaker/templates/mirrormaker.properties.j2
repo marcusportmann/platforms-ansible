@@ -1,0 +1,69 @@
+# Specify the cluster aliases
+clusters = {{ confluent_cluster_name }}{% if ('replicate_to_cluster' in confluent_config.clusters[confluent_cluster_name]) %}, {{ confluent_config.clusters[confluent_cluster_name].replicate_to_cluster }}{% endif %}
+
+
+# Connection information for each cluster
+# This is a comma separated list of host:port pairs for each cluster
+
+# The source cluster
+{% set kafka_bootstrap_servers = [] -%}
+{% for kafka_server_host in (confluent_config.clusters[confluent_cluster_name].kafka_server_hosts | flatten(1) | intersect(groups['confluent_kafka_server']|default([]))) %}
+{% set _ = kafka_bootstrap_servers.append("%s:%d" % (kafka_server_host, confluent_config.kafka_mirrormaker.kafka_broker.secure_broker_port)) %}
+{% endfor %}
+{{ confluent_cluster_name }}.bootstrap.servers = {{ kafka_bootstrap_servers | join(',') }}
+
+# The target cluster
+{% if (('replicate_to_cluster' in confluent_config.clusters[confluent_cluster_name]) and (confluent_config.clusters[confluent_cluster_name].replicate_to_cluster in confluent_config.clusters)) %}
+{% set kafka_bootstrap_servers = [] -%}
+{% for kafka_server_host in (confluent_config.clusters[confluent_config.clusters[confluent_cluster_name].replicate_to_cluster].kafka_server_hosts | flatten(1) | intersect(groups['confluent_kafka_server']|default([]))) %}
+{% set _ = kafka_bootstrap_servers.append("%s:%d" % (kafka_server_host, confluent_config.kafka_mirrormaker.kafka_broker.secure_broker_port)) %}
+{% endfor %}
+{{ confluent_config.clusters[confluent_cluster_name].replicate_to_cluster }}.bootstrap.servers = {{ kafka_bootstrap_servers | join(',') }}
+{{ confluent_config.clusters[confluent_cluster_name].replicate_to_cluster }}.producer.enable.idempotence = true
+{{ confluent_cluster_name }}->{{ confluent_config.clusters[confluent_cluster_name].replicate_to_cluster }}.enabled = true
+{% endif %}
+
+
+# Setting replication factor of newly created remote topics
+replication.factor=1
+
+
+############################# Internal Topic Settings  #############################
+# The replication factor for mm2 internal topics
+# For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
+checkpoints.topic.replication.factor=1
+heartbeats.topic.replication.factor=1
+offset-syncs.topic.replication.factor=1
+
+# The replication factor for connect internal topics
+# For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
+offset.storage.replication.factor=1
+status.storage.replication.factor=1
+config.storage.replication.factor=1
+
+# Customize as needed
+# replication.policy.separator = _
+# emit.heartbeats.interval.seconds = 5
+
+
+sync.topic.acls.enabled = true
+#sync.topic.acls.interval.seconds = 10
+sync.topic.configs.enabled = true
+#sync.topic.configs.interval.seconds = 10
+refresh.topics.enabled = true
+#refresh.topics.interval.seconds = 60
+refresh.groups.enabled = true
+#refresh.groups.interval.seconds = 60
+
+
+security.protocol=SASL_SSL
+ssl.protocol=TLS
+ssl.keystore.type=PKCS12
+ssl.keystore.location={{ confluent_config.kafka_mirrormaker.etc_directory }}/pki/{{ inventory_hostname_short }}.p12
+ssl.keystore.password={{ kafka_mirrormaker_keystore_password }}
+ssl.truststore.type=PKCS12
+ssl.truststore.location={{ confluent_config.kafka_mirrormaker.etc_directory }}/pki/ca.p12
+ssl.truststore.password={{ ca_truststore_password }}
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="{{ 'mirrormaker-' + confluent_cluster_name.replace('_', '-') }}" password="{{ kafka_mirrormaker_user_password }}";
+

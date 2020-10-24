@@ -1,0 +1,21 @@
+---
+# file: roles/burrow/meta/main.yaml
+
+galaxy_info:
+  author: Marcus Portmann
+  description: Ansible Confluent Kafka Burrow Role
+  license: Apache 2
+  min_ansible_version: 2.9
+  platforms:
+  - name: EL
+    versions:
+     - 7
+  - name: Ubuntu
+    versions:
+      - breezy
+      - focal
+  categories:
+  - platform
+
+dependencies:
+  - role: common

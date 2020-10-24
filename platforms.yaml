@@ -1,0 +1,166 @@
+#   ____ ___  _   _ _____ _    _   _ _____ _   _ _____ 
+#  / ___/ _ \| \ | |  ___| |  | | | | ____| \ | |_   _|
+# | |  | | | |  \| | |_  | |  | | | |  _| |  \| | | |  
+# | |__| |_| | |\  |  _| | |__| |_| | |___| |\  | | |  
+#  \____\___/|_| \_|_|   |_____\___/|_____|_| \_| |_|  
+#                                                      
+- name: Gather facts from all Confluent Kafka MirrorMaker related hosts
+  hosts: confluent_kafka_mirrorkeeper
+  become: yes
+  become_user: root
+  pre_tasks:
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['confluent_kafka_mirrorkeeper'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['prometheus-server'] | default([])) }}"
+  tasks: []
+
+- name: Gather facts from all Confluent Kafka Server related hosts
+  hosts: confluent_kafka_server
+  become: yes
+  become_user: root
+  pre_tasks:
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['burrow'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['confluent_kafka_server'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['prometheus-server'] | default([])) }}"
+  tasks: []
+
+- name: Gather facts from all Confluent Schema Registry related hosts
+  hosts: confluent_schema_registry
+  become: yes
+  become_user: root
+  pre_tasks:
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['prometheus-server'] | default([])) }}"
+  tasks: []
+
+- name: Gather facts from all Confluent ZooKeeper related hosts
+  hosts: confluent_zookeeper
+  become: yes
+  become_user: root
+  pre_tasks:
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['burrow'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['confluent_kafka_server'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['confluent_zookeeper'] | default([])) }}"
+  - setup:
+    delegate_to: "{{ item }}"
+    delegate_facts: True
+    when: hostvars[item]['ansible_default_ipv4'] is not defined
+    with_items: "{{ (groups['prometheus-server'] | default([])) }}"
+  tasks: []
+
+- name: Configure the Confluent ZooKeeper hosts
+  hosts: confluent_zookeeper
+  become: yes
+  become_user: root
+  roles:
+  - confluent_zookeeper
+
+- name: Configure the Confluent Kafka Server hosts
+  hosts: confluent_kafka_server
+  become: yes
+  become_user: root
+  roles:
+  - confluent_kafka_server
+
+- name: Configure the Confluent Kafak MirrorMaker hosts
+  hosts: confluent_kafka_mirrormaker
+  become: yes
+  become_user: root
+  roles:
+  - confluent_kafka_mirrormaker
+
+- name: Configure the Confluent Schema Registry hosts
+  hosts: confluent_schema_registry
+  become: yes
+  become_user: root
+  roles:
+  - confluent_schema_registry
+
+
+
+#  __  __  ___  _   _ ___ _____ ___  ____  ___ _   _  ____ 
+# |  \/  |/ _ \| \ | |_ _|_   _/ _ \|  _ \|_ _| \ | |/ ___|
+# | |\/| | | | |  \| || |  | || | | | |_) || ||  \| | |  _ 
+# | |  | | |_| | |\  || |  | || |_| |  _ < | || |\  | |_| |
+# |_|  |_|\___/|_| \_|___| |_| \___/|_| \_\___|_| \_|\____|
+#                                                          
+- name: Configure a Burrow host
+  hosts: burrow
+  become: yes
+  become_user: root
+  roles:
+  - burrow
+
+- name: Configure a monitored host
+  hosts: monitored
+  become: yes
+  become_user: root
+  roles:
+  - monitored
+
+- name: Configure a Prometheus Server host
+  hosts: prometheus_server
+  become: yes
+  become_user: root
+  roles:
+  - prometheus_server
+
+- name: Configure a Grafana host
+  hosts: grafana
+  become: yes
+  become_user: root
+  roles:
+  - grafana
+
+
+
+
+
+
+
+
+
+
+- name: Test hosts
+  hosts: test
+  become: yes
+  become_user: root
+  roles:
+  - test
+
+
+

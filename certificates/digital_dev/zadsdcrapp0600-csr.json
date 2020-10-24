@@ -1,0 +1,15 @@
+{
+  "CN": "zadsdcrapp0600.corp.dsarena.com",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "CN": "zadsdcrapp0600.corp.dsarena.com"
+    }
+  ],
+  "hosts": [
+    "zadsdcrapp0600.corp.dsarena.com"
+  ]
+}

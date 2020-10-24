@@ -1,0 +1,48 @@
+---
+# file: roles/common/tasks/main.yaml
+
+#   ___  ____       ____  ____  _____ ____ ___ _____ ___ ____
+#  / _ \/ ___|     / ___||  _ \| ____/ ___|_ _|  ___|_ _/ ___|
+# | | | \___ \ ____\___ \| |_) |  _|| |    | || |_   | | |
+# | |_| |___) |_____|__) |  __/| |__| |___ | ||  _|  | | |___
+#  \___/|____/     |____/|_|   |_____\____|___|_|   |___\____|
+#
+- include_tasks: ubuntu.yaml
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+  - unbound
+
+- include_tasks: redhat.yaml
+  when: ansible_os_family == 'RedHat'
+  tags:
+  - unbound
+
+
+#   ____ ___  __  __ __  __  ___  _   _
+#  / ___/ _ \|  \/  |  \/  |/ _ \| \ | |
+# | |  | | | | |\/| | |\/| | | | |  \| |
+# | |__| |_| | |  | | |  | | |_| | |\  |
+#  \____\___/|_|  |_|_|  |_|\___/|_| \_|
+#
+- name: Create the packages directory
+  local_action: file path="{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}" state="directory"
+  become: false
+
+- name: Create the /var/tmp/ansible directory
+  file:
+    path: /var/tmp/ansible
+    owner: root
+    group: root
+    mode: 0700
+    state: directory
+
+- name: Upgrade pip
+  pip: 
+    name: pip
+    extra_args: --upgrade
+
+- name: Install the pyOpenSSL python package
+  pip:
+    name: pyOpenSSL
+
+

@@ -1,0 +1,44 @@
+---
+# file: roles/prometheus_server/defaults/main.yaml
+
+prometheus_server_defaults:
+  etc_directory: /etc/prometheus
+  data_directory: /var/lib/prometheus
+
+  package_checksum: sha256:f1f2eeabbf7822572dce67565dc96ffaa2dd1897dd1d844562552b11123f151a
+  package_version: 2.21.0
+
+  user: prometheus
+  user_id: 455
+  group: prometheus
+  group_id: 455
+
+  node_exporter:
+    port: 9100
+
+  burrow:
+    exporter_port: 9105
+
+  confluent:
+    kafka_mirrormaker:
+      jmx_exporter_port: 9130
+    kafka_server:
+      jmx_exporter_port: 9131
+    schema_registry:
+      jmx_exporter_port: 9110
+    zookeeper:
+      jmx_exporter_port: 9150
+      exporter_port: 9151
+
+  kafka:
+    kafka_mirrormaker:
+      jmx_exporter_port: 9130
+    kafka_server:
+      jmx_exporter_port: 9131
+    schema_registry:
+      jmx_exporter_port: 9110
+    zookeeper:
+      jmx_exporter_port: 9150
+      exporter_port: 9151
+
+prometheus_server_config: "{{ prometheus_server_defaults | combine(prometheus_server | default({}), recursive=True) }}"

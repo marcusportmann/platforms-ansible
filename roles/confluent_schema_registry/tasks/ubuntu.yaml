@@ -1,0 +1,23 @@
+---
+# file: roles/confluent_schema_registry/tasks/ubuntu.yaml
+
+- debug:
+    msg: Applying the Ubuntu-specific Confluent Schema Registry configuration
+
+- name: Enable the firewall
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Allow all hosts access to tcp port 8443 (Confluent Schema Registry HTTPS)
+  ufw:
+    rule: allow
+    port: 8443
+    proto: tcp
+
+- name: Allow all hosts access to tcp port {{ confluent_config.schema_registry.prometheus_jmx_exporter.port }} (Prometheus JMX Exporter Port)
+  ufw:
+    rule: allow
+    port: '{{ confluent_config.schema_registry.prometheus_jmx_exporter.port }}'
+    proto: tcp
+  when: ((confluent_config.schema_registry.prometheus_jmx_exporter.enabled is defined) and (confluent_config.schema_registry.prometheus_jmx_exporter.enabled != None) and (confluent_config.schema_registry.prometheus_jmx_exporter.enabled == true))

@@ -1,0 +1,44 @@
+{% set kafka_bootstrap_servers = [] -%}
+{% for kafka_server_host in kafka_server_hosts %}
+{% set _ = kafka_bootstrap_servers.append("SASL_SSL://%s:%d" % (kafka_server_host, confluent_config.schema_registry.kafka_server.secure_broker_port)) %}
+{% endfor %}
+kafkastore.bootstrap.servers = {{ kafka_bootstrap_servers | join(',') }}
+
+{% if ((kafka_server_hosts | length) >= 3) %}
+kafkastore.topic.replication.factor=3
+{% else %}
+kafkastore.topic.replication.factor=1
+{% endif %}
+
+host.name={{ inventory_hostname }}
+
+listeners=https://0.0.0.0:8443
+
+inter.instance.protocol=https
+
+master.eligibility=true
+
+kafkastore.security.protocol=SASL_SSL
+kafkastore.ssl.protocol=TLS
+kafkastore.ssl.keystore.type=PKCS12
+kafkastore.ssl.keystore.location={{ confluent_config.schema_registry.etc_directory }}/pki/{{ inventory_hostname_short }}.p12
+kafkastore.ssl.keystore.password={{ schema_registry_keystore_password }}
+kafkastore.ssl.truststore.type=PKCS12
+kafkastore.ssl.truststore.location={{ confluent_config.schema_registry.etc_directory }}/pki/ca.p12
+kafkastore.ssl.truststore.password={{ ca_truststore_password }}
+kafkastore.sasl.mechanism=SCRAM-SHA-256
+kafkastore.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="{{ confluent_config.schema_registry.kafka_server.username }}" password="{{ kafka_server_schema_registry_user_password }}";
+
+ssl.protocol=TLS
+ssl.keystore.type=PKCS12
+ssl.keystore.location={{ confluent_config.schema_registry.etc_directory }}/pki/{{ inventory_hostname_short }}.p12
+ssl.keystore.password={{ schema_registry_keystore_password }}
+ssl.key.password={{ schema_registry_keystore_password }}
+ssl.truststore.type=PKCS12
+ssl.truststore.location={{ confluent_config.schema_registry.etc_directory }}/pki/ca.p12
+ssl.truststore.password={{ ca_truststore_password }}
+
+
+
+
+

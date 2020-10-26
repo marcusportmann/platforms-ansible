@@ -94,12 +94,12 @@
 #  \___/|____/     |____/|_|   |_____\____|___|_|   |___\____|
 #
 - include_tasks: ubuntu.yaml
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_distribution == 'Ubuntu'
   tags:
   - unbound
 
 - include_tasks: redhat.yaml
-  when: ansible_distribution == "CentOS"
+  when: ansible_os_family == 'RedHat'
   tags:
   - unbound
 

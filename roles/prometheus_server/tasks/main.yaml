@@ -108,15 +108,18 @@
     - name: Create the {{ prometheus_server_config.etc_directory }} directory
       file:
         path: '{{ prometheus_server_config.etc_directory }}'
-        owner: '{{ prometheus_server_config.user }}'
+        owner: root
         group: '{{ prometheus_server_config.group }}'
-        mode: 0775
+        mode: 0750
         state: directory
 
     - name: Extract the consoles directory from the Prometheus {{ prometheus_server_config.package_version }} package
       unarchive:
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
         dest: /etc/prometheus
+        owner: root
+        group: '{{ prometheus_server_config.group }}'
+        mode: 0750
         extra_opts:
         - --strip-components=1
         - prometheus-{{ prometheus_server_config.package_version }}.linux-amd64/consoles
@@ -126,6 +129,9 @@
       unarchive:
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
         dest: /etc/prometheus
+        owner: root
+        group: '{{ prometheus_server_config.group }}'
+        mode: 0750        
         extra_opts:
         - --strip-components=1
         - prometheus-{{ prometheus_server_config.package_version }}.linux-amd64/console_libraries
@@ -136,9 +142,9 @@
 - name: Create the {{ prometheus_data_directory }} directory
   file:
     path: '{{ prometheus_data_directory }}'
-    owner: '{{ prometheus_server_config.user }}'
+    owner: root
     group: '{{ prometheus_server_config.group }}'
-    mode: 0775
+    mode: 0750
     state: directory
 
 - name: Create the {{ prometheus_data_directory }}/metrics2 directory
@@ -146,24 +152,31 @@
     path: '{{ prometheus_data_directory }}/metrics2'
     owner: '{{ prometheus_server_config.user }}'
     group: '{{ prometheus_server_config.group }}'
-    mode: 0775
+    mode: 0750
     state: directory
 
 - name: Generate the Prometheus configuration
   template:
     src: prometheus.yaml.j2
     dest: /etc/prometheus/prometheus.yml
+    owner: root
+    group: '{{ prometheus_server_config.group }}'
+    mode: 0640    
   register: prometheus_server_configuration_template_result
 
 - name: Generate the Prometheus environment
   template:
     src: prometheus-environment
     dest: /etc/default/prometheus
+    mode: 0644  
 
 - name: Configure the Prometheus systemd unit
   template:
     src: prometheus.service.j2
     dest: /lib/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0755 
   register: prometheus_systemd_unit_template_result
 
 - name: Setup the Prometheus Kubernetes monitoring configuration
@@ -171,9 +184,9 @@
   - name: Create the /etc/prometheus/k8s directory
     file:
       path: /etc/prometheus/k8s
-      owner: '{{ prometheus_server_config.user }}'
+      owner: root
       group: '{{ prometheus_server_config.group }}'
-      mode: 0775
+      mode: 0640    
       state: directory
 
   - name: Copy the certificate for the Kubernetes CA to the Prometheus host
@@ -188,6 +201,9 @@
       copy:
         src: fetched_files/{{ inventory_hostname }}/etc/kubernetes/pki/ca.crt
         dest: /etc/prometheus/k8s/ca.crt
+        owner: root
+        group: '{{ prometheus_server_config.group }}'
+        mode: 0640    
 
   - name: Save the token for the Prometheus service account
     block:

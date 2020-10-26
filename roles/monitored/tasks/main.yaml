@@ -101,11 +101,15 @@
   template:
     src: prometheus-node-exporter-environment
     dest: /etc/default/prometheus-node-exporter
+    mode: 0644 
 
 - name: Create the Prometheus Node Exporter systemd unit
   template:
     src: prometheus-node-exporter.service.j2
     dest: /lib/systemd/system/prometheus-node-exporter.service
+    owner: root
+    group: root
+    mode: 0755 
 
 - name: Restart the Prometheus Node Exporter service
   systemd:

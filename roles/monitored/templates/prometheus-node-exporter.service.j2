@@ -8,7 +8,7 @@ Documentation=https://github.com/prometheus/node_exporter
 Restart=always
 User=prometheus
 EnvironmentFile=/etc/default/prometheus-node-exporter
-ExecStart=/usr/bin/prometheus-node-exporter $ARGS
+ExecStart=/usr/bin/prometheus-node-exporter --web.listen-address="0.0.0.0:9100" $ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no

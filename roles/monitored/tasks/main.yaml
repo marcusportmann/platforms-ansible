@@ -86,7 +86,7 @@
       unarchive:
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/node_exporter-{{ prometheus_node_exporter_version }}.linux-amd64.tar.gz'
         dest: /usr/bin
-        user: root
+        owner: root
         group: root
         mode: 0755
         extra_opts:
@@ -104,7 +104,7 @@
   template:
     src: prometheus-node-exporter-environment
     dest: /etc/default/prometheus-node-exporter
-    user: root
+    owner: root
     group: root
     mode: 0644 
 

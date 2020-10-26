@@ -5,7 +5,7 @@
   file:
     path: '/etc/grafana'
     owner: root
-    group: grafana
+    group: root
     mode: 0755
     state: directory
 
@@ -40,7 +40,7 @@
     src: grafana.ini.j2
     dest: /etc/grafana/grafana.ini
     owner: root
-    group: grafana
+    group: root
     mode: 0644
   register: grafana_configuration_template_result
 
@@ -49,7 +49,7 @@
     src: prometheus-data-source.yaml.j2
     dest: /etc/grafana/provisioning/datasources/prometheus-data-source.yaml
     owner: root
-    group: grafana
+    group: root
     mode: 0644
 
 - name: Create the dashboard provisioning file
@@ -57,14 +57,14 @@
     src: all-dashboards.yaml.j2
     dest: /etc/grafana/provisioning/dashboards/all-dashboards.yaml
     owner: root
-    group: grafana
+    group: root
     mode: 0644
 
 - name: Create the /var/lib/grafana/dashboards directory
   file:
     path: /var/lib/grafana/dashboards
     owner: root
-    group: grafana
+    group: root
     mode: 0755
     state: directory
 
@@ -73,7 +73,7 @@
     src: dashboards/prometheus-2-0-overview_rev2.json.j2
     dest: /var/lib/grafana/dashboards/prometheus-2-0-overview_rev2.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
 
 - name: Copy the nodes.json dashboard file
@@ -81,7 +81,7 @@
     src: dashboards/nodes.json.j2
     dest: /var/lib/grafana/dashboards/nodes.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
 
 - name: Copy the kubernetes.json dashboard file
@@ -89,7 +89,7 @@
     src: dashboards/kubernetes.json.j2
     dest: /var/lib/grafana/dashboards/kubernetes.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
   when: ('k8s_master' in groups)
 
@@ -98,7 +98,7 @@
     src: dashboards/zookeeper.json.j2
     dest: /var/lib/grafana/dashboards/zookeeper.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
   when: (('kafka_zookeeper' in groups) or ('confluent_zookeeper' in groups) or ('zookeeper' in groups))
 
@@ -107,7 +107,7 @@
     src: dashboards/kafka.json.j2
     dest: /var/lib/grafana/dashboards/kafka.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
   when: (('kafka_zookeeper' in groups) or ('confluent_zookeeper' in groups) or ('zookeeper' in groups))
 
@@ -116,7 +116,7 @@
     src: dashboards/kafka-producers-consumers.json.j2
     dest: /var/lib/grafana/dashboards/kafka-producers-consumers.json
     owner: root
-    group: grafana
+    group: root
     mode: 0644
   when: ((grafana_config.dashboards.kafka_producers_and_consumers.enabled) and (('kafka_zookeeper' in groups) or ('confluent_zookeeper' in groups) or ('zookeeper' in groups)))
 

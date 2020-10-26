@@ -110,7 +110,7 @@
 
     - name: Create the {{ prometheus_server_config.etc_directory }} directory
       file:
-        path: '{{ prometheus_server_config.etc_directory }}'
+        path: root
         owner: root
         group: '{{ prometheus_server_config.group }}'
         mode: 0755
@@ -121,7 +121,7 @@
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
         dest: /etc/prometheus
         owner: root
-        group: '{{ prometheus_server_config.group }}'
+        group: root
         mode: 0755
         extra_opts:
         - --strip-components=1
@@ -133,7 +133,7 @@
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
         dest: /etc/prometheus
         owner: root
-        group: '{{ prometheus_server_config.group }}'
+        group: root
         mode: 0755        
         extra_opts:
         - --strip-components=1
@@ -163,7 +163,7 @@
     src: prometheus.yaml.j2
     dest: /etc/prometheus/prometheus.yml
     owner: root
-    group: '{{ prometheus_server_config.group }}'
+    group: root
     mode: 0644
   register: prometheus_server_configuration_template_result
 
@@ -188,7 +188,7 @@
     file:
       path: /etc/prometheus/k8s
       owner: root
-      group: '{{ prometheus_server_config.group }}'
+      group: root
       mode: 0755
       state: directory
 
@@ -205,7 +205,7 @@
         src: fetched_files/{{ inventory_hostname }}/etc/kubernetes/pki/ca.crt
         dest: /etc/prometheus/k8s/ca.crt
         owner: root
-        group: '{{ prometheus_server_config.group }}'
+        group: root
         mode: 0644
 
   - name: Save the token for the Prometheus service account

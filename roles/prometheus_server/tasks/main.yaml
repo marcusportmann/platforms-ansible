@@ -110,16 +110,16 @@
 
     - name: Create the {{ prometheus_server_config.etc_directory }} directory
       file:
-        path: root
+        path: '{{ prometheus_server_config.etc_directory }}'
         owner: root
-        group: '{{ prometheus_server_config.group }}'
+        group: root
         mode: 0755
         state: directory
 
     - name: Extract the consoles directory from the Prometheus {{ prometheus_server_config.package_version }} package
       unarchive:
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
-        dest: /etc/prometheus
+        dest: '{{ prometheus_server_config.etc_directory }}'
         owner: root
         group: root
         mode: 0755
@@ -131,7 +131,7 @@
     - name: Extract the console_libraries directory from the Prometheus {{ prometheus_server_config.package_version }} package
       unarchive:
         src: '{{ packages_root }}/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/prometheus-{{ prometheus_server_config.package_version }}.linux-amd64.tar.gz'
-        dest: /etc/prometheus
+        dest: '{{ prometheus_server_config.etc_directory }}'
         owner: root
         group: root
         mode: 0755        

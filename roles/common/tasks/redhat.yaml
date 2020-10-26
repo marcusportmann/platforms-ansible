@@ -4,6 +4,12 @@
 - debug:
     msg: Applying the RedHat-specific common configuration
   
+- name: Enable the firewalld service
+  systemd:
+    name: firewalld
+    state: started
+    enabled: true  
+  
 - name: Check if EPEL YUM repo is already configured
   stat: path={{ epel_repofile_path }}
   register: epel_repofile_result

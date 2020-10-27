@@ -35,6 +35,22 @@
   tags:
   - unbound
 
+- name: Create the {{ gafana_config.data_directory }} directory
+  file:
+    path: '{{ gafana_config.data_directory }}'
+    owner: '{{ gafana_config.user }}'
+    group: '{{ gafana_config.group }}'
+    mode: 0750
+    state: directory
+
+- name: Create the {{ gafana_config.log_directory }} directory
+  file:
+    path: '{{ gafana_config.log_directory }}'
+    owner: '{{ gafana_config.user }}'
+    group: '{{ gafana_config.group }}'
+    mode: 0750
+    state: directory
+
 - name: Create the Grafana configuration file
   template:
     src: grafana.ini.j2

@@ -9,7 +9,10 @@ grafana_defaults:
   ubuntu_package: grafana_7.2.1_amd64.deb
   ubuntu_package_checksum: sha256:34625fda0fe543bba140a8362c1c1c6fbd63dfb7e10968592c01ff14421c7781
   ubuntu_package_version: 7.2.1
-
+  
+  data_directory: /var/lib/grafana
+  log_directory: /var/log/grafana
+  
   user: grafana
   user_id: 425
   group: grafana

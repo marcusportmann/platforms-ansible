@@ -1,10 +1,6 @@
 ---
 # file: roles/prometheus_server/tasks/main.yaml
 
-- set_fact:
-    prometheus_data_directory: "{{ prometheus_data_directory if ((prometheus_data_directory is defined) and (prometheus_data_directory != None)) else '/var/lib/prometheus' }}"
-
-
 #   ___  ____       ____  ____  _____ ____ ___ _____ ___ ____
 #  / _ \/ ___|     / ___||  _ \| ____/ ___|_ _|  ___|_ _/ ___|
 # | | | \___ \ ____\___ \| |_) |  _|| |    | || |_   | | |
@@ -142,17 +138,17 @@
 
     when: (prometheus_installed_version != prometheus_server_config.package_version)
 
-- name: Create the {{ prometheus_data_directory }} directory
+- name: Create the {{ prometheus_server_config.data_directory }} directory
   file:
-    path: '{{ prometheus_data_directory }}'
+    path: '{{ prometheus_server_config.data_directory }}'
     owner: '{{ prometheus_server_config.user }}'
     group: '{{ prometheus_server_config.group }}'
     mode: 0750
     state: directory
 
-- name: Create the {{ prometheus_data_directory }}/metrics2 directory
+- name: Create the {{ prometheus_server_config.data_directory }}/metrics2 directory
   file:
-    path: '{{ prometheus_data_directory }}/metrics2'
+    path: '{{ prometheus_server_config.data_directory }}/metrics2'
     owner: '{{ prometheus_server_config.user }}'
     group: '{{ prometheus_server_config.group }}'
     mode: 0750

@@ -77,8 +77,8 @@
 - name: Create the /var/tmp/ansible/zookeeper directory
   file:
     path: /var/tmp/ansible/zookeeper
-    owner: root
-    group: root
+    owner: 'root'
+    group: 'root'
     mode: '0700'
     state: directory
 
@@ -204,6 +204,9 @@
   copy:
     src: files/prometheus_jmx_exporter.yaml
     dest: '{{ confluent_config.zookeeper.etc_directory }}/conf/prometheus_jmx_exporter.yaml'
+    owner: '{{ confluent_config.zookeeper.user }}'
+    group: '{{ confluent_config.zookeeper.group }}'
+    mode: '0440'    
   when: ((prometheus_jmx_exporter.enabled is defined) and (prometheus_jmx_exporter.enabled != None) and (prometheus_jmx_exporter.enabled == true))
 
 - name: Generate or retrieve the password for the ZooKeeper admin user
@@ -253,6 +256,9 @@
   template:
     src: zookeeper.service.j2
     dest: /lib/systemd/system/zookeeper.service
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   register: zookeeper_systemd_unit_template_result
 
 - name: Restart the ZooKeeper service if required

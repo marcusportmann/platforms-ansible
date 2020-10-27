@@ -74,14 +74,6 @@
     create_home: yes
     state: present
 
-- name: Create the /var/tmp/ansible/confluent directory
-  file:
-    path: /var/tmp/ansible/confluent
-    owner: 'root'
-    group: 'root'
-    mode: '0700'
-    state: directory
-
 - name: Create the {{ confluent_config.schema_registry.etc_directory }} directory
   file:
     path: '{{ confluent_config.schema_registry.etc_directory }}'

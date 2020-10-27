@@ -35,19 +35,19 @@
   tags:
   - unbound
 
-- name: Create the {{ gafana_config.data_directory }} directory
+- name: Create the {{ grafana_config.data_directory }} directory
   file:
-    path: '{{ gafana_config.data_directory }}'
-    owner: '{{ gafana_config.user }}'
-    group: '{{ gafana_config.group }}'
+    path: '{{ grafana_config.data_directory }}'
+    owner: '{{ grafana_config.user }}'
+    group: '{{ grafana_config.group }}'
     mode: 0750
     state: directory
 
-- name: Create the {{ gafana_config.log_directory }} directory
+- name: Create the {{ grafana_config.log_directory }} directory
   file:
-    path: '{{ gafana_config.log_directory }}'
-    owner: '{{ gafana_config.user }}'
-    group: '{{ gafana_config.group }}'
+    path: '{{ grafana_config.log_directory }}'
+    owner: '{{ grafana_config.user }}'
+    group: '{{ grafana_config.group }}'
     mode: 0750
     state: directory
 

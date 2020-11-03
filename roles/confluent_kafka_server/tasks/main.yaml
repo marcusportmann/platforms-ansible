@@ -203,14 +203,6 @@
     mode: '0750'
     state: directory
 
-- name: Ensure that the parent directory for the {{ confluent_config.kafka_server.data_directory }} directory has the correct permissions
-  file:
-    path: '{{ confluent_config.kafka_server.data_directory }}/..'
-    owner: 'root'
-    group: 'root'
-    mode: '0755'
-    state: directory
-
 - name: Create the Kafka Server configuration file
   template:
     src: server.properties.j2
